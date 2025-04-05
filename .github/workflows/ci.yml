@@ -40,4 +40,4 @@ jobs:
           pnpm run ci:core
           pnpm run ci:server
           pnpm run ci:client
-          pnpm run ci:test
+          pnpm run test
