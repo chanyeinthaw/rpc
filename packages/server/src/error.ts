@@ -1,15 +1,13 @@
-import { type RPCErrorContract, RPC_ERROR } from '@pl4dr/rpc-core'
+import { RPC_ERROR_CODE, type RPCErrorContract } from '@pl4dr/rpc-core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 export class RPCError extends Error implements RPCErrorContract {
   public readonly procedure: string | undefined
   public readonly input: unknown | undefined
   public readonly issues: readonly StandardSchemaV1.Issue[] | undefined
-  public readonly code: number
-  public readonly codeKey: keyof typeof RPC_ERROR
 
   constructor(
-    code: keyof typeof RPC_ERROR,
+    public readonly code: keyof typeof RPC_ERROR_CODE,
     message: string,
     options?: ErrorOptions & {
       issues?: readonly StandardSchemaV1.Issue[]
@@ -18,9 +16,6 @@ export class RPCError extends Error implements RPCErrorContract {
     }
   ) {
     super(message, options)
-
-    this.codeKey = code
-    this.code = RPC_ERROR[code]
 
     if (options?.issues) this.issues = options.issues
     if (options?.procedure) this.procedure = options.procedure

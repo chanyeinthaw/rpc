@@ -1,6 +1,6 @@
 {
   "name": "@pl4dr/rpc-client",
-  "version": "0.0.0",
+  "version": "1000.0.0",
   "description": "RPC Client",
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
   "type": "module",

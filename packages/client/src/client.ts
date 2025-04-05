@@ -20,12 +20,12 @@ function validateData<T extends StandardSchemaV1>(
   if (!inputResult.success) {
     return err(
       new RPCClientError('VALIDATION_ERROR', {
+        code: 'VALIDATION_ERROR',
+        httpStatus: -1,
         procedure: procedureName,
         input: data,
-        error: {
-          message: 'Error validating input',
-          issues: inputResult.issues,
-        },
+        message: 'Error validating input',
+        issues: inputResult.issues,
       })
     )
   }
@@ -88,14 +88,19 @@ export function makeRPCClient(options: { baseURL: string; fetch?: Fetch }) {
       )
       if (responseResult.isErr()) {
         return err(
-          new RPCClientError('FETCH_ERROR', {
-            procedure: procedure.name,
-            input,
-            error: {
+          new RPCClientError(
+            'FETCH_ERROR',
+            {
+              code: 'FETCH_ERROR',
+              httpStatus: -1,
+              procedure: procedure.name,
+              input,
               message: 'Fetch error',
-              cause: responseResult.error,
             },
-          })
+            {
+              cause: responseResult.error,
+            }
+          )
         )
       }
 
@@ -105,31 +110,32 @@ export function makeRPCClient(options: { baseURL: string; fetch?: Fetch }) {
       })()
       if (parsedOutputResult.isErr()) {
         return err(
-          new RPCClientError('PARSE_ERROR', {
-            procedure: procedure.name,
-            input,
-            error: {
+          new RPCClientError(
+            'PARSE_ERROR',
+            {
+              code: 'PARSE_ERROR',
+              httpStatus: -1,
+              procedure: procedure.name,
+              input,
               message: 'Error parsing json response',
-              cause: parsedOutputResult.error,
             },
-          })
+            {
+              cause: parsedOutputResult.error,
+            }
+          )
         )
       }
 
-      if (parsedOutputResult.value.success === false) {
+      if ('message' in parsedOutputResult.value) {
         return err(
-          new RPCClientError('RPC_ERROR', {
-            procedure: procedure.name,
-            input: parsedOutputResult.value.input,
-            error: parsedOutputResult.value.error,
-          })
+          new RPCClientError('RPC_ERROR', parsedOutputResult.value.data)
         )
       }
 
       const outputResult = validateData(
         procedure.name,
         procedure.outputSchema,
-        parsedOutputResult.value.data
+        parsedOutputResult.value.result.data
       )
 
       return outputResult

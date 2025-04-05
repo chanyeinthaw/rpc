@@ -1,4 +1,4 @@
-import { type RouterResponse, RPC_ERROR } from '@pl4dr/rpc-core'
+import { type RouterResponse } from '@pl4dr/rpc-core'
 import { makeRPC, RPCError } from '@pl4dr/rpc-server'
 import SuperJSON from 'superjson'
 import { describe, expect, test } from 'vitest'
@@ -54,8 +54,9 @@ describe('router', () => {
     const data = SuperJSON.deserialize(body)
 
     expect(data).toStrictEqual({
-      success: true,
-      data: 'hello world',
+      result: {
+        data: 'hello world',
+      },
     })
   })
 
@@ -94,8 +95,9 @@ describe('router', () => {
     const data = SuperJSON.deserialize(body)
 
     expect(data).toStrictEqual({
-      success: true,
-      data: 'hello world',
+      result: {
+        data: 'hello world',
+      },
     })
   })
 
@@ -130,13 +132,12 @@ describe('router', () => {
     const body = await response.json()
     const data = SuperJSON.deserialize<RouterResponse>(body)
 
-    expect(data).toHaveProperty('success')
-    expect(data.success).toBe(false)
+    expect(data).toHaveProperty('message')
 
-    if (data.success === false) {
-      expect(data.error.status).toBe(400)
-      expect(data.error.issues).toBeTruthy()
-      expect(data.error.issues?.[0]?.message).toBe('Too short')
+    if ('message' in data) {
+      expect(data.data.httpStatus).toBe(400)
+      expect(data.data.issues).toBeTruthy()
+      expect(data.data.issues?.[0]?.message).toBe('Too short')
     }
   })
 
@@ -171,12 +172,11 @@ describe('router', () => {
     const body = await response.json()
     const data = SuperJSON.deserialize<RouterResponse>(body)
 
-    expect(data).toHaveProperty('success')
-    expect(data.success).toBe(false)
+    expect(data).toHaveProperty('message')
 
-    if (data.success === false) {
-      expect(data.error.status).toBe(RPC_ERROR.FORBIDDEN)
-      expect(data.error.message).toBe('Forbidden')
+    if ('message' in data) {
+      expect(data.data.code).toBe('FORBIDDEN')
+      expect(data.data.message).toBe('Forbidden')
     }
   })
 })

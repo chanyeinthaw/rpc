@@ -2,20 +2,22 @@ import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 export type RouterResponse<Data = unknown> =
   | {
-      success: true
-      data: Data
+      result: {
+        data: Data
+      }
     }
   | {
-      success: false
-      error: RouterErrorDetails
-      procedure?: string
-      input?: unknown
+      message: string
+      code: number
+      data: RouterErrorDetails<unknown>
     }
 
-export type RouterErrorDetails = {
-  status: number
+export type RouterErrorDetails<Input = unknown> = {
+  code: string
+  httpStatus: number
   message: string
-  cause?: unknown
-  stack?: string | undefined
+  procedure?: string
   issues?: readonly StandardSchemaV1.Issue[]
+  stack?: string
+  input?: Input
 }

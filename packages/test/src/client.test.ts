@@ -1,5 +1,4 @@
 import { makeRPCClient } from '@pl4dr/rpc-client'
-import { RPC_ERROR } from '@pl4dr/rpc-core'
 import { makeRPC, RPCError } from '@pl4dr/rpc-server'
 import { describe, expect, test } from 'vitest'
 import { z } from 'zod'
@@ -83,7 +82,7 @@ describe('client', () => {
 
     if (response.isErr()) {
       expect(response.error.code).toBe('RPC_ERROR')
-      expect(response.error.error.status).toBe(RPC_ERROR.UNAUTHORIZED)
+      expect(response.error.rpcErrCode).toBe('UNAUTHORIZED')
     }
   })
 
@@ -95,7 +94,7 @@ describe('client', () => {
 
     if (response.isErr()) {
       expect(response.error.code).toBe('RPC_ERROR')
-      expect(response.error.error.status).toBe(RPC_ERROR.NOT_FOUND)
+      expect(response.error.rpcErrCode).toBe('NOT_FOUND')
     }
   })
 })

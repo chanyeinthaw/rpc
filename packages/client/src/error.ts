@@ -7,26 +7,19 @@ export type RPCClientErrorCode =
   | 'RPC_ERROR'
 
 export class RPCClientError<Input = unknown> extends Error {
-  public procedure?: string
-  public input?: Input
-  public error: Omit<RouterErrorDetails, 'status'> & {
-    status?: number
-  }
+  public readonly procedure?: string
+  public readonly input?: Input
+  public readonly rpcErrCode?: RouterErrorDetails['code']
 
   constructor(
     public code: RPCClientErrorCode,
-    options: {
-      procedure?: string
-      input?: Input
-      error: Omit<RouterErrorDetails, 'status'> & {
-        status?: number
-      }
-    }
+    error: RouterErrorDetails<Input>,
+    options?: ErrorOptions
   ) {
-    super(options.error.message)
+    super(error.message, options)
 
-    this.procedure = options.procedure
-    this.input = options.input
-    this.error = options.error
+    this.procedure = error.procedure
+    this.input = error.input
+    this.rpcErrCode = error.code
   }
 }

@@ -152,7 +152,7 @@ export class ProcedureBuilder<
       } catch (e) {
         let error: RPCError
         if (e instanceof RPCError) {
-          error = new RPCError(e.codeKey, e.message, {
+          error = new RPCError(e.code, e.message, {
             cause: e.cause,
             procedure: procedureName,
             input: inputParseResult.value,

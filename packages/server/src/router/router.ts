@@ -1,5 +1,6 @@
 import {
-  RPC_ERROR,
+  JSON_RPC_ERROR_CODES_BY_KEY,
+  RPC_ERROR_CODE,
   type Procedure,
   type RouterErrorDetails,
   type RouterResponse,
@@ -117,31 +118,29 @@ export class Router<Context> {
     let errorDetails: RouterErrorDetails
     let erroredProcedure: string | undefined
     let erroredInput: unknown | undefined
-    let status = 500
 
     if (e instanceof RPCError) {
       errorDetails = {
-        status: e.code,
+        code: e.code,
+        httpStatus: RPC_ERROR_CODE[e.code],
         message: e.message,
         issues: e.issues,
         stack: e.stack,
-        cause: e.cause,
       }
       erroredProcedure = e.procedure
       erroredInput = e.input
-      status = e.code
     } else if (e instanceof Error) {
       errorDetails = {
-        status: RPC_ERROR.INTERNAL_SERVER_ERROR,
+        code: 'INTERNAL_SERVER_ERROR',
+        httpStatus: RPC_ERROR_CODE['INTERNAL_SERVER_ERROR'],
         message: e.message,
         stack: e.stack,
-        cause: e.cause,
       }
     } else {
       errorDetails = {
-        status: RPC_ERROR.INTERNAL_SERVER_ERROR,
-        message: 'Unknown error',
-        cause: e,
+        code: 'INTERNAL_SERVER_ERROR',
+        httpStatus: RPC_ERROR_CODE['INTERNAL_SERVER_ERROR'],
+        message: 'Internal server error',
       }
     }
 
@@ -150,10 +149,11 @@ export class Router<Context> {
     }
 
     return {
-      success: false,
-      error: errorDetails,
-      procedure: erroredProcedure,
-      input: erroredInput,
+      message: errorDetails.message,
+      code: JSON_RPC_ERROR_CODES_BY_KEY[
+        errorDetails.code as keyof typeof JSON_RPC_ERROR_CODES_BY_KEY
+      ],
+      data: errorDetails,
     } satisfies RouterResponse
   }
 
@@ -163,21 +163,22 @@ export class Router<Context> {
     request: Request
   }) {
     let response: RouterResponse = {
-      success: true,
-      data: undefined,
+      result: {
+        data: undefined,
+      },
     }
 
     let status = 200
 
     try {
-      response.data = await this.processRequest(
+      response.result.data = await this.processRequest(
         options.pathname,
         options.context,
         options.request
       )
     } catch (e) {
       response = this.formatError(e)
-      this.handleErrorTap(response.error)
+      this.handleErrorTap(response.data)
     }
 
     const body = SuperJSON.stringify(response)

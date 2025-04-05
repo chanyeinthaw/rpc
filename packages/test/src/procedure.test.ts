@@ -1,4 +1,3 @@
-import { RPC_ERROR } from '@pl4dr/rpc-core'
 import { makeRPC, RPCError } from '@pl4dr/rpc-server'
 import { describe, expect, test } from 'vitest'
 import { z } from 'zod'
@@ -167,7 +166,7 @@ describe('procedure calling', () => {
 
     const result1 = await HelloProcedure1.callable.try(null, 'world')
     expect(result1.isErr()).toBe(true)
-    expect(result1._unsafeUnwrapErr().codeKey).toBe('FORBIDDEN')
+    expect(result1._unsafeUnwrapErr().code).toBe('FORBIDDEN')
     expect(result1._unsafeUnwrapErr().message).toBe('Forbidden')
 
     const HelloProcedure2 = procedure
@@ -180,7 +179,7 @@ describe('procedure calling', () => {
 
     const result2 = await HelloProcedure2.callable.try(null, 1 as any)
     expect(result2.isErr()).toBe(true)
-    expect(result2._unsafeUnwrapErr().code).toBe(RPC_ERROR.BAD_REQUEST)
+    expect(result2._unsafeUnwrapErr().code).toBe('PARSE_ERROR')
     expect(result2._unsafeUnwrapErr().issues).toBeTruthy()
 
     const HelloProcedure3 = procedure
@@ -193,7 +192,7 @@ describe('procedure calling', () => {
 
     const result3 = await HelloProcedure3.callable.try(null, '')
     expect(result3.isErr()).toBe(true)
-    expect(result3._unsafeUnwrapErr().code).toBe(RPC_ERROR.BAD_REQUEST)
+    expect(result3._unsafeUnwrapErr().code).toBe('PARSE_ERROR')
     expect(result3._unsafeUnwrapErr().issues).toBeTruthy()
   })
 })
