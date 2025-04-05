@@ -1,6 +1,5 @@
-import { makeRPCClient } from '@rpc/client'
-import { RPC_ERROR } from '@rpc/core'
-import { makeRPC, RPCError } from '@rpc/server'
+import { RPC_ERROR } from '@pl4dr/rpc-core'
+import { makeRPC, RPCError } from '@pl4dr/rpc-server'
 import { describe, expect, test } from 'vitest'
 import { z } from 'zod'
 

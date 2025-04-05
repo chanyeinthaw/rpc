@@ -1,5 +1,9 @@
-import type { Procedure, RouterErrorDetails, RouterResponse } from '@rpc/core'
-import { RPC_ERROR } from '@rpc/core'
+import {
+  RPC_ERROR,
+  type Procedure,
+  type RouterErrorDetails,
+  type RouterResponse,
+} from '@pl4dr/rpc-core'
 import { Result, ResultAsync } from 'neverthrow'
 import SuperJSON from 'superjson'
 import { RPCError } from '../error'

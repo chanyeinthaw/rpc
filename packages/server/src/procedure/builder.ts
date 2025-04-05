@@ -3,7 +3,7 @@ import type {
   MockHandler,
   Procedure,
   ProcedureHandler,
-} from '@rpc/core'
+} from '@pl4dr/rpc-core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { ResultAsync } from 'neverthrow'
 import { z, type ZodVoid } from 'zod'

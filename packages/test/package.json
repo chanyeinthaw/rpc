@@ -9,9 +9,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@rpc/client": "workspace:*",
-    "@rpc/core": "workspace:*",
-    "@rpc/server": "workspace:*"
+    "@pl4dr/rpc-client": "workspace:*",
+    "@pl4dr/rpc-core": "workspace:*",
+    "@pl4dr/rpc-server": "workspace:*"
   },
   "devDependencies": {
     "tsx": "*",

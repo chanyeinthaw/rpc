@@ -1,5 +1,5 @@
-import { RPC_ERROR, type RouterResponse } from '@rpc/core'
-import { makeRPC, RPCError } from '@rpc/server'
+import { type RouterResponse, RPC_ERROR } from '@pl4dr/rpc-core'
+import { makeRPC, RPCError } from '@pl4dr/rpc-server'
 import SuperJSON from 'superjson'
 import { describe, expect, test } from 'vitest'
 import { z } from 'zod'

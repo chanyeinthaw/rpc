@@ -1,5 +1,5 @@
 {
-  "name": "@rpc/core",
+  "name": "@pl4dr/rpc-core",
   "version": "1.0.0",
   "description": "RPC Core",
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
@@ -8,6 +8,10 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pl4dr/rpc"
+  },
   "scripts": {
     "lint": "tsc",
     "build": "tsup",
@@ -31,5 +35,8 @@
     "neverthrow": "*",
     "superjson": "*",
     "zod": "*"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }

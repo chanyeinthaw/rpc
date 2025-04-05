@@ -1,4 +1,4 @@
-import { RPC_ERROR, type RPCErrorContract } from '@rpc/core'
+import { type RPCErrorContract, RPC_ERROR } from '@pl4dr/rpc-core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 export class RPCError extends Error implements RPCErrorContract {

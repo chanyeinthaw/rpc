@@ -1,4 +1,4 @@
-import type { Procedure } from '@rpc/core'
+import type { Procedure } from '@pl4dr/rpc-core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 export function makeDirectCaller<Context>(

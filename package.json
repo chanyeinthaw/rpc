@@ -5,14 +5,14 @@
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chanyeinthaw/rpc"
+    "url": "git+https://github.com/pl4dr/rpc"
   },
   "type": "module",
   "scripts": {
     "test": "pnpm --filter test run test",
-    "ci:core": "pnpm --filter core run build && pnpm --filter core run check:format && pnpm --filter core run check:exports && pnpm --filter core run lint",
-    "ci:client": "pnpm --filter client run build && pnpm --filter client run check:format && pnpm --filter client run check:exports && pnpm --filter client run lint",
-    "ci:server": "pnpm --filter server run build && pnpm --filter server run check:format && pnpm --filter server run check:exports && pnpm --filter server run lint"
+    "ci:core": "pnpm --filter rpc-core run build && pnpm --filter rpc-core run check:format && pnpm --filter rpc-core run check:exports && pnpm --filter rpc-core run lint",
+    "ci:client": "pnpm --filter rpc-client run build && pnpm --filter rpc-client run check:format && pnpm --filter rpc-client run check:exports && pnpm --filter rpc-client run lint",
+    "ci:server": "pnpm --filter rpc-server run build && pnpm --filter rpc-server run check:format && pnpm --filter rpc-server run check:exports && pnpm --filter rpc-server run lint"
   },
   "license": "MIT",
   "devDependencies": {

@@ -1,5 +1,5 @@
 {
-  "name": "@rpc/client",
+  "name": "@pl4dr/rpc-client",
   "version": "1.0.0",
   "description": "RPC Client",
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
@@ -8,6 +8,10 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pl4dr/rpc"
+  },
   "scripts": {
     "lint": "tsc",
     "build": "tsup",
@@ -31,6 +35,9 @@
     "neverthrow": "*",
     "superjson": "*",
     "zod": "*",
-    "@rpc/core": "workspace:*"
+    "@pl4dr/rpc-core": "workspace:*"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }

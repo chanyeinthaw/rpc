@@ -39,7 +39,7 @@ importers:
 
   packages/client:
     dependencies:
-      '@rpc/core':
+      '@pl4dr/rpc-core':
         specifier: workspace:*
         version: link:../core
       '@standard-schema/spec':
@@ -78,28 +78,9 @@ importers:
         specifier: '*'
         version: 5.8.2
 
-  packages/example:
-    dependencies:
-      '@rpc/client':
-        specifier: workspace:*
-        version: link:../client
-      '@rpc/core':
-        specifier: workspace:*
-        version: link:../core
-      '@rpc/server':
-        specifier: workspace:*
-        version: link:../server
-    devDependencies:
-      tsx:
-        specifier: '*'
-        version: 4.19.3
-      typescript:
-        specifier: '*'
-        version: 5.8.2
-
   packages/server:
     dependencies:
-      '@rpc/core':
+      '@pl4dr/rpc-core':
         specifier: workspace:*
         version: link:../core
       '@standard-schema/spec':
@@ -124,13 +105,13 @@ importers:
 
   packages/test:
     dependencies:
-      '@rpc/client':
+      '@pl4dr/rpc-client':
         specifier: workspace:*
         version: link:../client
-      '@rpc/core':
+      '@pl4dr/rpc-core':
         specifier: workspace:*
         version: link:../core
-      '@rpc/server':
+      '@pl4dr/rpc-server':
         specifier: workspace:*
         version: link:../server
     devDependencies:
