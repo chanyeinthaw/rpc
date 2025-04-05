@@ -15,34 +15,36 @@ export class ProcedureBuilder<
   Input extends StandardSchemaV1 = ZodVoid,
   Output extends StandardSchemaV1 = ZodVoid,
 > {
-  private inputSchema!: Input
-  private outputSchema!: Output
-  private middlewares!: Array<MiddlewareHandler<unknown, unknown>>
-  private procedureName!: string
-  private errorTap!: (error: RPCError) => void
+  private inputSchema: Input = z.void() as any
+  private outputSchema: Output = z.void() as any
+  private middlewares: Array<MiddlewareHandler<unknown, unknown>> = []
+  private procedureName: string = 'UNNAMED'
+  private errorTap: (error: RPCError) => void = () => {}
 
-  constructor() {
-    this.reset()
+  constructor(source?: ProcedureBuilder<Context, Input, Output>) {
+    if (source) {
+      this.inputSchema = source.inputSchema
+      this.outputSchema = source.outputSchema
+      this.middlewares = source.middlewares
+      this.procedureName = source.procedureName
+      this.errorTap = source.errorTap
+    }
   }
 
-  private reset() {
-    this.inputSchema = z.any() as any
-    this.outputSchema = z.any() as any
-    this.middlewares = []
-    this.procedureName = 'UNNAMED'
-    this.errorTap = () => {}
+  private clone() {
+    return new ProcedureBuilder<any, any, any>(this)
   }
 
   public name(name: string) {
     this.procedureName = name
 
-    return this
+    return this.clone()
   }
 
   public tapOnError(tap: (error: RPCError) => void) {
     this.errorTap = tap
 
-    return this
+    return this.clone()
   }
 
   public input<I extends StandardSchemaV1>(
@@ -50,7 +52,7 @@ export class ProcedureBuilder<
   ): ProcedureBuilder<Context, I, Output> {
     this.inputSchema = schema as any
 
-    return this as any
+    return this.clone()
   }
 
   public output<O extends StandardSchemaV1>(
@@ -58,7 +60,7 @@ export class ProcedureBuilder<
   ): ProcedureBuilder<Context, Input, O> {
     this.outputSchema = schema as any
 
-    return this as any
+    return this.clone()
   }
 
   public use<ContextOut>(
@@ -66,7 +68,7 @@ export class ProcedureBuilder<
   ): ProcedureBuilder<ContextOut, Input, Output> {
     this.middlewares.push(middleware as MiddlewareHandler<unknown, unknown>)
 
-    return this as any
+    return this.clone()
   }
 
   public query(handler: ProcedureHandler<Context, Input, Output>) {
@@ -90,7 +92,7 @@ export class ProcedureBuilder<
       return await handler(input)
     }
 
-    const procedure = {
+    return {
       name: this.procedureName,
       method: method,
 
@@ -104,9 +106,6 @@ export class ProcedureBuilder<
 
       mocked: true,
     } satisfies Procedure<Input, Output, unknown>
-    this.reset()
-
-    return procedure
   }
 
   private build(
@@ -189,7 +188,7 @@ export class ProcedureBuilder<
       return outputParseResult.value
     }
 
-    const procedure = {
+    return {
       name: this.procedureName,
       method,
 
@@ -203,9 +202,6 @@ export class ProcedureBuilder<
 
       mocked: false,
     } satisfies Procedure<Input, Output, unknown>
-    this.reset()
-
-    return procedure
   }
 }
 
