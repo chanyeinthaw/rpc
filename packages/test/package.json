@@ -1,0 +1,21 @@
+{
+  "name": "test",
+  "private": true,
+  "version": "1.0.0",
+  "description": "RPC Example",
+  "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@rpc/client": "workspace:*",
+    "@rpc/core": "workspace:*",
+    "@rpc/server": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "*",
+    "typescript": "*",
+    "vitest": "^3.1.1"
+  }
+}

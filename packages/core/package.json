@@ -1,0 +1,34 @@
+{
+  "name": "@rpc/core",
+  "version": "1.0.0",
+  "description": "RPC Core",
+  "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "lint": "tsc",
+    "build": "tsup",
+    "format": "prettier --write .",
+    "check:format": "prettier --check .",
+    "check:exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.cjs"
+    }
+  },
+  "devDependencies": {
+    "typescript": "*"
+  },
+  "dependencies": {
+    "@standard-schema/spec": "^1.0.0",
+    "neverthrow": "*",
+    "superjson": "*",
+    "zod": "*"
+  }
+}
