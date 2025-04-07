@@ -34,8 +34,5 @@
     "neverthrow": "*",
     "superjson": "*",
     "zod": "*"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   }
 }

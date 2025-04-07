@@ -35,8 +35,5 @@
     "superjson": "*",
     "zod": "*",
     "@pl4dr/rpc-core": "workspace:*"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   }
 }
