@@ -1,4 +1,4 @@
-import { type RouterResponse } from '@pl4dr/rpc-core'
+import { RPC_ERROR_CODE, type RouterResponse } from '@pl4dr/rpc-core'
 import { makeRPC, RPCError } from '@pl4dr/rpc-server'
 import SuperJSON from 'superjson'
 import { describe, expect, test } from 'vitest'
@@ -126,7 +126,7 @@ describe('router', () => {
       }),
     })
 
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(400)
     expect(response.headers.get('content-type')).toBe('application/json')
 
     const body = await response.json()
@@ -166,7 +166,7 @@ describe('router', () => {
       }),
     })
 
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(RPC_ERROR_CODE.FORBIDDEN)
     expect(response.headers.get('content-type')).toBe('application/json')
 
     const body = await response.json()

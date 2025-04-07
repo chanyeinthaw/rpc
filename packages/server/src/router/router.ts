@@ -178,6 +178,7 @@ export class Router<Context> {
       )
     } catch (e) {
       response = this.formatError(e)
+      status = response.data.httpStatus
       this.handleErrorTap(response.data)
     }
 
