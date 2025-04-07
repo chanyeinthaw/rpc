@@ -1,6 +1,6 @@
 {
   "name": "@pl4dr/rpc-server",
-  "version": "1000.0.0",
+  "version": "1001.0.0",
   "description": "RPC Server",
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
   "type": "module",
@@ -31,7 +31,6 @@
     "typescript": "*"
   },
   "dependencies": {
-    "@standard-schema/spec": "^1.0.0",
     "@types/node": "^22.14.0",
     "neverthrow": "*",
     "superjson": "*",

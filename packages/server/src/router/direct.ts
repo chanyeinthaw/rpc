@@ -1,19 +1,15 @@
 import type { Procedure } from '@pl4dr/rpc-core'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 export function makeDirectCaller<Context>(
   createContext: () => Promise<Context>
 ) {
-  function direct<
-    Input extends StandardSchemaV1,
-    Output extends StandardSchemaV1,
-  >(procedure: Procedure<Input, Output, Context>) {
-    async function call(input: StandardSchemaV1.InferInput<Input>) {
+  function direct<Input, Output>(procedure: Procedure<Input, Output, Context>) {
+    async function call(input: Input) {
       const context = await createContext()
       return await procedure.callable.call(context, input)
     }
 
-    async function tryCall(input: StandardSchemaV1.InferInput<Input>) {
+    async function tryCall(input: Input) {
       const context = await createContext()
       return await procedure.callable.try(context, input)
     }

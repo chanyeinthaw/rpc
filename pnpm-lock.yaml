@@ -42,9 +42,6 @@ importers:
       '@pl4dr/rpc-core':
         specifier: workspace:*
         version: link:../core
-      '@standard-schema/spec':
-        specifier: ^1.0.0
-        version: 1.0.0
       neverthrow:
         specifier: '*'
         version: 8.2.0
@@ -61,9 +58,6 @@ importers:
 
   packages/core:
     dependencies:
-      '@standard-schema/spec':
-        specifier: ^1.0.0
-        version: 1.0.0
       neverthrow:
         specifier: '*'
         version: 8.2.0
@@ -83,9 +77,6 @@ importers:
       '@pl4dr/rpc-core':
         specifier: workspace:*
         version: link:../core
-      '@standard-schema/spec':
-        specifier: ^1.0.0
-        version: 1.0.0
       '@types/node':
         specifier: ^22.14.0
         version: 22.14.0
@@ -434,9 +425,6 @@ packages:
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
-
-  '@standard-schema/spec@1.0.0':
-    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
@@ -1338,8 +1326,6 @@ snapshots:
     optional: true
 
   '@sindresorhus/is@4.6.0': {}
-
-  '@standard-schema/spec@1.0.0': {}
 
   '@types/estree@1.0.7': {}
 

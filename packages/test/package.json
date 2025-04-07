@@ -6,7 +6,8 @@
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
   "type": "module",
   "scripts": {
-    "test": "vitest --ui"
+    "test": "vitest --ui",
+    "dev": "tsx ./src/index.ts"
   },
   "dependencies": {
     "@pl4dr/rpc-client": "workspace:*",

@@ -1,36 +1,61 @@
 import type { ProcedureMeta, RouterResponse } from '@pl4dr/rpc-core'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { err, ok, Result, ResultAsync } from 'neverthrow'
 import SuperJSON from 'superjson'
+import { type Schema } from 'zod'
 import { RPCClientError } from './error'
-import { schema } from './utils/schema'
 
 type Fetch = typeof fetch
 type BaseProcedureMeta = ProcedureMeta<any, any, any>
 
-function validateData<T extends StandardSchemaV1>(
+function validateInput<T, O>(
   procedureName: string,
-  schemaObj: T,
-  data: StandardSchemaV1.InferInput<T>
-): Result<
-  StandardSchemaV1.InferOutput<T>,
-  RPCClientError<StandardSchemaV1.InferInput<T>>
-> {
-  const inputResult = schema(schemaObj).parse(data)
+  schemaObj: Schema<T>,
+  data: T
+): Result<T, RPCClientError<T, O>> {
+  const inputResult = schemaObj.safeParse(data)
   if (!inputResult.success) {
     return err(
-      new RPCClientError('VALIDATION_ERROR', {
+      new RPCClientError<T, O>('VALIDATION_ERROR', {
         code: 'VALIDATION_ERROR',
         httpStatus: -1,
         procedure: procedureName,
         input: data,
         message: 'Error validating input',
-        issues: inputResult.issues,
+        issues: inputResult.error.issues,
       })
     )
   }
 
-  return ok(inputResult.value)
+  return ok(inputResult.data)
+}
+
+function validateOutput<T, O>(
+  procedureName: string,
+  schemaObj: Schema<O>,
+  input: T,
+  data: O
+): Result<O, RPCClientError<T, O>> {
+  const inputResult = schemaObj.safeParse(data)
+  if (!inputResult.success) {
+    return err(
+      new RPCClientError<T, O>(
+        'VALIDATION_ERROR',
+        {
+          code: 'VALIDATION_ERROR',
+          httpStatus: -1,
+          procedure: procedureName,
+          input: input,
+          message: 'Error validating input',
+          issues: inputResult.error.issues,
+        },
+        {
+          output: data,
+        }
+      )
+    )
+  }
+
+  return ok(inputResult.data)
 }
 
 export function makeRPCClient(options: { baseURL: string; fetch?: Fetch }) {
@@ -60,24 +85,20 @@ export function makeRPCClient(options: { baseURL: string; fetch?: Fetch }) {
     })
   }
 
-  function procedure<
-    Input extends StandardSchemaV1,
-    Output extends StandardSchemaV1,
-  >(procedure: ProcedureMeta<Input, Output, unknown>) {
+  function procedure<Input, Output>(
+    procedure: ProcedureMeta<Input, Output, unknown>
+  ) {
     async function call(
-      input: StandardSchemaV1.InferInput<Input>
-    ): Promise<
-      Result<
-        StandardSchemaV1.InferOutput<Output>,
-        RPCClientError<StandardSchemaV1.InferInput<Input>>
-      >
-    > {
-      const inputResult = validateData(
+      input: Input
+    ): Promise<Result<Output, RPCClientError<Input, Output>>> {
+      const inputResult = validateInput<Input, Output>(
         procedure.name,
         procedure.inputSchema,
         input
       )
-      if (inputResult.isErr()) return inputResult
+      if (inputResult.isErr()) {
+        return err(inputResult.error)
+      }
 
       const request = prepareRequest(procedure.name, procedure.method, input)
       const responsePromise = fetchFn(request)
@@ -88,7 +109,7 @@ export function makeRPCClient(options: { baseURL: string; fetch?: Fetch }) {
       )
       if (responseResult.isErr()) {
         return err(
-          new RPCClientError(
+          new RPCClientError<Input, Output>(
             'FETCH_ERROR',
             {
               code: 'FETCH_ERROR',
@@ -106,11 +127,11 @@ export function makeRPCClient(options: { baseURL: string; fetch?: Fetch }) {
 
       const parsedOutputResult = await ResultAsync.fromThrowable(async () => {
         const json = await responseResult.value.json()
-        return SuperJSON.deserialize<RouterResponse>(json)
+        return SuperJSON.deserialize<RouterResponse<Output, Input>>(json)
       })()
       if (parsedOutputResult.isErr()) {
         return err(
-          new RPCClientError(
+          new RPCClientError<Input, Output>(
             'PARSE_ERROR',
             {
               code: 'PARSE_ERROR',
@@ -128,20 +149,24 @@ export function makeRPCClient(options: { baseURL: string; fetch?: Fetch }) {
 
       if ('message' in parsedOutputResult.value) {
         return err(
-          new RPCClientError('RPC_ERROR', parsedOutputResult.value.data)
+          new RPCClientError<Input, Output>(
+            'RPC_ERROR',
+            parsedOutputResult.value.data
+          )
         )
       }
 
-      const outputResult = validateData(
+      const outputResult = validateOutput<Input, Output>(
         procedure.name,
         procedure.outputSchema,
+        inputResult.value,
         parsedOutputResult.value.result.data
       )
 
       return outputResult
     }
 
-    async function callUnsafe(input: StandardSchemaV1.InferInput<Input>) {
+    async function callUnsafe(input: Input) {
       const result = await call(input)
       if (result.isErr()) throw result.error
 

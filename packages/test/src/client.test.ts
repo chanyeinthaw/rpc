@@ -6,6 +6,13 @@ import { z } from 'zod'
 function setup() {
   const { router, procedure } = makeRPC<any>()
 
+  const VoidProcedure = procedure
+    .name('void')
+    .output(z.string())
+    .query(async function () {
+      return 'void'
+    })
+
   const HelloProcedure = procedure
     .name('hello')
     .input(z.string().min(5, 'Too short'))
@@ -30,6 +37,7 @@ function setup() {
       throw new Error('Not implemented')
     })
 
+  router.register(VoidProcedure)
   router.register(HelloProcedure)
   router.register(ThrowProcedure)
 
@@ -48,6 +56,7 @@ function setup() {
 
   return {
     client,
+    VoidProcedure,
     HelloProcedure,
     ThrowProcedure,
     UnimplementedProcedure,
@@ -56,11 +65,15 @@ function setup() {
 
 describe('client', () => {
   test('can call procedure', async () => {
-    const { client, HelloProcedure } = setup()
+    const { client, HelloProcedure, VoidProcedure } = setup()
 
     const response = await client.procedure(HelloProcedure).try('world')
     expect(response.isOk()).toBe(true)
     expect(response._unsafeUnwrap()).toBe('hello world')
+
+    const voidRes = await client.procedure(VoidProcedure).try()
+    expect(voidRes.isOk()).toBe(true)
+    expect(voidRes._unsafeUnwrap()).toBe('void')
   })
 
   test('returns error on invalid input', async () => {

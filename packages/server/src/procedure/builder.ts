@@ -4,19 +4,13 @@ import type {
   Procedure,
   ProcedureHandler,
 } from '@pl4dr/rpc-core'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { ResultAsync } from 'neverthrow'
-import { z, type ZodVoid } from 'zod'
+import { z, type Schema } from 'zod'
 import { RPCError } from '../error'
-import { schema } from '../utils/schema'
 
-export class ProcedureBuilder<
-  Context,
-  Input extends StandardSchemaV1 = ZodVoid,
-  Output extends StandardSchemaV1 = ZodVoid,
-> {
-  private inputSchema: Input = z.void() as any
-  private outputSchema: Output = z.void() as any
+export class ProcedureBuilder<Context, Input = void, Output = void> {
+  private inputSchema: Schema<Input> = z.void() as unknown as Schema<Input>
+  private outputSchema: Schema<Output> = z.void() as unknown as Schema<Output>
   private middlewares: Array<MiddlewareHandler<unknown, unknown>> = []
   private procedureName: string = 'UNNAMED'
   private errorTap: (error: RPCError) => void = () => {}
@@ -35,29 +29,27 @@ export class ProcedureBuilder<
     return new ProcedureBuilder<any, any, any>(this)
   }
 
-  public name(name: string) {
+  public name(name: string): ProcedureBuilder<Context, Input, Output> {
     this.procedureName = name
 
     return this.clone()
   }
 
-  public tapOnError(tap: (error: RPCError) => void) {
+  public tapOnError(
+    tap: (error: RPCError) => void
+  ): ProcedureBuilder<Context, Input, Output> {
     this.errorTap = tap
 
     return this.clone()
   }
 
-  public input<I extends StandardSchemaV1>(
-    schema: I
-  ): ProcedureBuilder<Context, I, Output> {
+  public input<I>(schema: Schema<I>): ProcedureBuilder<Context, I, Output> {
     this.inputSchema = schema as any
 
     return this.clone()
   }
 
-  public output<O extends StandardSchemaV1>(
-    schema: O
-  ): ProcedureBuilder<Context, Input, O> {
+  public output<O>(schema: Schema<O>): ProcedureBuilder<Context, Input, O> {
     this.outputSchema = schema as any
 
     return this.clone()
@@ -88,7 +80,7 @@ export class ProcedureBuilder<
       throw new Error('Procedure name is not set')
     }
 
-    async function call(_: unknown, input: StandardSchemaV1.InferInput<Input>) {
+    async function call(_: unknown, input: Input) {
       return await handler(input)
     }
 
@@ -122,14 +114,11 @@ export class ProcedureBuilder<
     const middlewares = this.middlewares
     const errorTap = this.errorTap
 
-    async function call(
-      context: unknown,
-      input: StandardSchemaV1.InferInput<Input>
-    ) {
-      const inputParseResult = schema(inputSchema).parse(input)
+    async function call(context: unknown, input: Input) {
+      const inputParseResult = inputSchema.safeParse(input)
       if (inputParseResult.success === false) {
         throw new RPCError('PARSE_ERROR', 'Error parsing input', {
-          issues: inputParseResult.issues,
+          issues: inputParseResult.error.issues,
           procedure: procedureName,
         })
       }
@@ -147,7 +136,7 @@ export class ProcedureBuilder<
       try {
         output = await handler({
           ctx: currentContext as Context,
-          input: inputParseResult.value,
+          input: inputParseResult.data,
         })
       } catch (e) {
         let error: RPCError
@@ -155,7 +144,7 @@ export class ProcedureBuilder<
           error = new RPCError(e.code, e.message, {
             cause: e.cause,
             procedure: procedureName,
-            input: inputParseResult.value,
+            input: inputParseResult.data,
           })
         } else {
           error = new RPCError(
@@ -164,7 +153,7 @@ export class ProcedureBuilder<
             {
               cause: e,
               procedure: procedureName,
-              input: inputParseResult.value,
+              input: inputParseResult.data,
             }
           )
         }
@@ -176,16 +165,16 @@ export class ProcedureBuilder<
         throw error
       }
 
-      const outputParseResult = schema(outputSchema).parse(output)
+      const outputParseResult = outputSchema.safeParse(output)
       if (outputParseResult.success === false) {
         throw new RPCError('PARSE_ERROR', 'Error parsing output', {
-          issues: outputParseResult.issues,
+          issues: outputParseResult.error.issues,
           procedure: procedureName,
-          input: inputParseResult.value,
+          input: inputParseResult.data,
         })
       }
 
-      return outputParseResult.value
+      return outputParseResult.data
     }
 
     return {

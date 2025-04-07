@@ -1,4 +1,4 @@
-import type { StandardSchemaV1 } from '@standard-schema/spec'
+import type { ZodIssue } from 'zod'
 
 export const RPC_ERROR_CODE = {
   PARSE_ERROR: 400,
@@ -83,7 +83,7 @@ export const JSON_RPC_ERROR_CODES_BY_KEY = {
 export interface RPCErrorContract {
   procedure: string | undefined
   input: unknown | undefined
-  issues: readonly StandardSchemaV1.Issue[] | undefined
+  issues: ZodIssue[] | undefined
 
   code: keyof typeof RPC_ERROR_CODE
 

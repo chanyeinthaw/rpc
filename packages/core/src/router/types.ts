@@ -1,6 +1,6 @@
-import type { StandardSchemaV1 } from '@standard-schema/spec'
+import { type ZodIssue } from 'zod'
 
-export type RouterResponse<Data = unknown> =
+export type RouterResponse<Data = unknown, Input = unknown> =
   | {
       result: {
         data: Data
@@ -9,7 +9,7 @@ export type RouterResponse<Data = unknown> =
   | {
       message: string
       code: number
-      data: RouterErrorDetails<unknown>
+      data: RouterErrorDetails<Input>
     }
 
 export type RouterErrorDetails<Input = unknown> = {
@@ -17,7 +17,7 @@ export type RouterErrorDetails<Input = unknown> = {
   httpStatus: number
   message: string
   procedure?: string
-  issues?: readonly StandardSchemaV1.Issue[]
+  issues?: ZodIssue[]
   stack?: string
   input?: Input
 }
