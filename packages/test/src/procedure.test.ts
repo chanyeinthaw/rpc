@@ -1,4 +1,4 @@
-import { makeRPC, RPCError } from '@pl4dr/rpc-server'
+import { makeRPC, RPCError } from '@be4/server'
 import { describe, expect, test } from 'vitest'
 import { z } from 'zod'
 

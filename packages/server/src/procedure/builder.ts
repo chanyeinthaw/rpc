@@ -3,7 +3,7 @@ import type {
   MockHandler,
   Procedure,
   ProcedureHandler,
-} from '@pl4dr/rpc-core'
+} from '@be4/core'
 import { ResultAsync } from 'neverthrow'
 import { z, type Schema } from 'zod'
 import { RPCError } from '../error'

@@ -4,7 +4,7 @@ import {
   type Procedure,
   type RouterErrorDetails,
   type RouterResponse,
-} from '@pl4dr/rpc-core'
+} from '@be4/core'
 import { Result, ResultAsync } from 'neverthrow'
 import SuperJSON from 'superjson'
 import { RPCError } from '../error'

@@ -1,5 +1,5 @@
-import { makeRPCClient } from '@pl4dr/rpc-client'
-import { makeRPC, RPCError } from '@pl4dr/rpc-server'
+import { makeRPCClient } from '@be4/client'
+import { makeRPC, RPCError } from '@be4/server'
 import { describe, expect, test } from 'vitest'
 import { z } from 'zod'
 

@@ -1,4 +1,4 @@
-import { RPC_ERROR_CODE, type RPCErrorContract } from '@pl4dr/rpc-core'
+import { RPC_ERROR_CODE, type RPCErrorContract } from '@be4/core'
 import type { ZodIssue } from 'zod'
 
 export class RPCError extends Error implements RPCErrorContract {

@@ -1,4 +1,4 @@
-import type { ProcedureHandler } from '@pl4dr/rpc-core'
+import type { ProcedureHandler } from '@be4/core'
 import type { ProcedureBuilder } from './builder'
 
 export type InferProcedureInputFromBuilder<P> =

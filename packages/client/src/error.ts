@@ -1,4 +1,4 @@
-import type { RouterErrorDetails } from '@pl4dr/rpc-core'
+import type { RouterErrorDetails } from '@be4/core'
 
 export type RPCClientErrorCode =
   | 'VALIDATION_ERROR'

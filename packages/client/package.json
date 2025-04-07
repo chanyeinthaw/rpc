@@ -1,5 +1,5 @@
 {
-  "name": "@pl4dr/rpc-client",
+  "name": "@be4/client",
   "version": "1001.0.0",
   "description": "RPC Client",
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
@@ -34,6 +34,6 @@
     "neverthrow": "*",
     "superjson": "*",
     "zod": "*",
-    "@pl4dr/rpc-core": "workspace:*"
+    "@be4/core": "workspace:*"
   }
 }

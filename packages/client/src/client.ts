@@ -1,4 +1,4 @@
-import type { ProcedureMeta, RouterResponse } from '@pl4dr/rpc-core'
+import type { ProcedureMeta, RouterResponse } from '@be4/core'
 import { err, ok, Result, ResultAsync } from 'neverthrow'
 import SuperJSON from 'superjson'
 import { type Schema } from 'zod'

@@ -10,9 +10,9 @@
     "dev": "tsx ./src/index.ts"
   },
   "dependencies": {
-    "@pl4dr/rpc-client": "workspace:*",
-    "@pl4dr/rpc-core": "workspace:*",
-    "@pl4dr/rpc-server": "workspace:*"
+    "@be4/client": "workspace:*",
+    "@be4/core": "workspace:*",
+    "@be4/server": "workspace:*"
   },
   "devDependencies": {
     "@vitest/ui": "3.1.1",

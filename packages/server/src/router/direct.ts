@@ -1,4 +1,4 @@
-import type { Procedure } from '@pl4dr/rpc-core'
+import type { Procedure } from '@be4/core'
 
 export function makeDirectCaller<Context>(
   createContext: () => Promise<Context>
