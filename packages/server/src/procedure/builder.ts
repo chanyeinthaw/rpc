@@ -4,11 +4,17 @@ import type {
   Procedure,
   ProcedureHandler,
 } from '@be4/core'
+import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { ResultAsync } from 'neverthrow'
 import { z, type Schema } from 'zod'
 import { RPCError } from '../error'
 
-export class ProcedureBuilder<Context, Input = void, Output = void> {
+export class ProcedureBuilder<
+  Context,
+  Input = void,
+  Output = void,
+  HandlerInput = void,
+> {
   private inputSchema: Schema<Input> = z.void() as unknown as Schema<Input>
   private outputSchema: Schema<Output> = z.void() as unknown as Schema<Output>
   private middlewares: Array<MiddlewareHandler<unknown, unknown>> = []
@@ -26,10 +32,12 @@ export class ProcedureBuilder<Context, Input = void, Output = void> {
   }
 
   private clone() {
-    return new ProcedureBuilder<any, any, any>(this)
+    return new ProcedureBuilder<any, any, any, any>(this)
   }
 
-  public name(name: string): ProcedureBuilder<Context, Input, Output> {
+  public name(
+    name: string
+  ): ProcedureBuilder<Context, Input, Output, HandlerInput> {
     this.procedureName = name
 
     return this.clone()
@@ -37,19 +45,28 @@ export class ProcedureBuilder<Context, Input = void, Output = void> {
 
   public tapOnError(
     tap: (error: RPCError) => void
-  ): ProcedureBuilder<Context, Input, Output> {
+  ): ProcedureBuilder<Context, Input, Output, HandlerInput> {
     this.errorTap = tap
 
     return this.clone()
   }
 
-  public input<I>(schema: Schema<I>): ProcedureBuilder<Context, I, Output> {
+  public input<I extends StandardSchemaV1>(
+    schema: I
+  ): ProcedureBuilder<
+    Context,
+    StandardSchemaV1.InferInput<I>,
+    Output,
+    StandardSchemaV1.InferOutput<I>
+  > {
     this.inputSchema = schema as any
 
     return this.clone()
   }
 
-  public output<O>(schema: Schema<O>): ProcedureBuilder<Context, Input, O> {
+  public output<O>(
+    schema: Schema<O>
+  ): ProcedureBuilder<Context, Input, O, HandlerInput> {
     this.outputSchema = schema as any
 
     return this.clone()
@@ -57,17 +74,17 @@ export class ProcedureBuilder<Context, Input = void, Output = void> {
 
   public use<ContextOut>(
     middleware: MiddlewareHandler<Context, ContextOut>
-  ): ProcedureBuilder<ContextOut, Input, Output> {
+  ): ProcedureBuilder<ContextOut, Input, Output, HandlerInput> {
     this.middlewares.push(middleware as MiddlewareHandler<unknown, unknown>)
 
     return this.clone()
   }
 
-  public query(handler: ProcedureHandler<Context, Input, Output>) {
+  public query(handler: ProcedureHandler<Context, HandlerInput, Output>) {
     return this.build('GET', handler)
   }
 
-  public mutation(handler: ProcedureHandler<Context, Input, Output>) {
+  public mutation(handler: ProcedureHandler<Context, HandlerInput, Output>) {
     return this.build('POST', handler)
   }
 
@@ -102,7 +119,7 @@ export class ProcedureBuilder<Context, Input = void, Output = void> {
 
   private build(
     method: 'GET' | 'POST',
-    handler: ProcedureHandler<Context, Input, Output>
+    handler: ProcedureHandler<Context, HandlerInput, Output>
   ) {
     if (this.procedureName === 'UNNAMED') {
       throw new Error('Procedure name is not set')
@@ -136,7 +153,7 @@ export class ProcedureBuilder<Context, Input = void, Output = void> {
       try {
         output = await handler({
           ctx: currentContext as Context,
-          input: inputParseResult.data,
+          input: inputParseResult.data as unknown as HandlerInput,
         })
       } catch (e) {
         let error: RPCError
