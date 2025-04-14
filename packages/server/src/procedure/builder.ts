@@ -97,13 +97,15 @@ export class ProcedureBuilder<
   }
 
   private _contract(method: 'GET' | 'POST') {
+    const builder = this.clone()
+
     return {
       name: this.procedureName,
       method,
       inputSchema: this.inputSchema,
       outputSchema: this.outputSchema,
 
-      builder: this,
+      builder,
     } satisfies ProcedureMeta<Input, Output, Context> & {
       builder: ProcedureBuilder<Context, Input, Output, HandlerInput>
     }
