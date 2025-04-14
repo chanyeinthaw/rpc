@@ -89,7 +89,7 @@ export class ProcedureBuilder<
     return this.build('POST', handler)
   }
 
-  public contract() {
+  public get contract() {
     return {
       query: this._contract('GET'),
       mutation: this._contract('POST'),
