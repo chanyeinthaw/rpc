@@ -105,7 +105,12 @@ export class ProcedureBuilder<
       inputSchema: this.inputSchema,
       outputSchema: this.outputSchema,
 
-      builder,
+      builder: builder as ProcedureBuilder<
+        Context,
+        Input,
+        Output,
+        HandlerInput
+      >,
     } satisfies ProcedureMeta<Input, Output, Context> & {
       builder: ProcedureBuilder<Context, Input, Output, HandlerInput>
     }
