@@ -3,6 +3,7 @@ import type {
   MockHandler,
   Procedure,
   ProcedureHandler,
+  ProcedureMeta,
 } from '@be4/core'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { ResultAsync } from 'neverthrow'
@@ -86,6 +87,22 @@ export class ProcedureBuilder<
 
   public mutation(handler: ProcedureHandler<Context, HandlerInput, Output>) {
     return this.build('POST', handler)
+  }
+
+  public contract() {
+    return {
+      query: this._contract('GET'),
+      mutation: this._contract('POST'),
+    }
+  }
+
+  private _contract(method: 'GET' | 'POST') {
+    return {
+      name: this.procedureName,
+      method,
+      inputSchema: this.inputSchema,
+      outputSchema: this.outputSchema,
+    } satisfies ProcedureMeta<Input, Output, Context>
   }
 
   public mock(
