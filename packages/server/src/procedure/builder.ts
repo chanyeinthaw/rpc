@@ -102,7 +102,11 @@ export class ProcedureBuilder<
       method,
       inputSchema: this.inputSchema,
       outputSchema: this.outputSchema,
-    } satisfies ProcedureMeta<Input, Output, Context>
+
+      builder: this,
+    } satisfies ProcedureMeta<Input, Output, Context> & {
+      builder: ProcedureBuilder<Context, Input, Output, HandlerInput>
+    }
   }
 
   public mock(
