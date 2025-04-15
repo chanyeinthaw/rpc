@@ -41,7 +41,7 @@ export function generateContractsFromSpec(spec: string) {
     const code = dedent`
       export const ${procedureName} = {
         name: '${procedureName}',
-        method: '${method}',
+        method: '${method}' as const,
         inputSchema: ${inputSchema},
         outputSchema: ${outputSchema},
       }

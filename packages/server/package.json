@@ -1,6 +1,6 @@
 {
   "name": "@be4/server",
-  "version": "1001.2.0",
+  "version": "1001.2.1",
   "description": "RPC Server",
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
   "type": "module",
