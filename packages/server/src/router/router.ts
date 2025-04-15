@@ -7,6 +7,7 @@ import {
 } from '@be4/core'
 import { Result, ResultAsync } from 'neverthrow'
 import SuperJSON from 'superjson'
+import zodToJsonSchema from 'zod-to-json-schema'
 import { RPCError } from '../error'
 
 export class Router<Context> {
@@ -189,5 +190,27 @@ export class Router<Context> {
         'Content-Type': 'application/json',
       },
     })
+  }
+
+  public specs() {
+    const procedures = []
+
+    for (const [, procedure] of this.procedures.entries()) {
+      const inputSchema = zodToJsonSchema(procedure.inputSchema, 'inputSchema')
+      const outputSchema = zodToJsonSchema(
+        procedure.outputSchema,
+        'outputSchema'
+      )
+
+      procedures.push({
+        ...procedure,
+        inputSchema,
+        outputSchema,
+      })
+    }
+
+    return {
+      procedures,
+    }
   }
 }

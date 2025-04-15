@@ -9,6 +9,7 @@
   },
   "type": "module",
   "scripts": {
+    "dev": "pnpm --filter test run dev",
     "test": "pnpm --filter test run test",
     "ci:core": "pnpm --filter core run build && pnpm --filter core run check:format && pnpm --filter core run check:exports && pnpm --filter core run lint",
     "ci:client": "pnpm --filter client run build && pnpm --filter client run check:format && pnpm --filter client run check:exports && pnpm --filter client run lint",

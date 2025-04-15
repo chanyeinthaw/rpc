@@ -9,3 +9,5 @@ export type {
 export * from './error'
 export { makeDirectCaller } from './router/direct'
 export * from './rpc'
+
+export { generateContractsFromSpec } from './codegen'

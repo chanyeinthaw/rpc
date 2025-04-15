@@ -1,6 +1,6 @@
 {
   "name": "@be4/server",
-  "version": "1001.1.3",
+  "version": "1001.2.0",
   "description": "RPC Server",
   "author": "Chan Nyein Thaw<me@chanyeinthaw.com>",
   "type": "module",
@@ -34,8 +34,13 @@
     "@be4/core": "workspace:*",
     "@standard-schema/spec": "^1.0.0",
     "@types/node": "^22.14.0",
+    "dedent": "^1.5.3",
+    "json-schema-ref-resolver": "^3.0.0",
+    "json-schema-to-zod": "^2.6.1",
     "neverthrow": "*",
+    "prettier": "^3.5.3",
     "superjson": "*",
-    "zod": "*"
+    "zod": "*",
+    "zod-to-json-schema": "^3.24.5"
   }
 }
