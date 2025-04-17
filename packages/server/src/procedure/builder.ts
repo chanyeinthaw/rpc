@@ -33,7 +33,12 @@ export class ProcedureBuilder<
   }
 
   private clone() {
-    return new ProcedureBuilder<any, any, any, any>(this)
+    const cloned = new ProcedureBuilder<any, any, any, any>(this)
+
+    this.errorTap = () => {}
+    this.middlewares = []
+
+    return cloned
   }
 
   public name(
