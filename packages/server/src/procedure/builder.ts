@@ -22,39 +22,32 @@ export class ProcedureBuilder<
   private procedureName: string = 'UNNAMED'
   private errorTap: (error: RPCError) => void = () => {}
 
-  constructor(source?: ProcedureBuilder<Context, Input, Output>) {
+  constructor(source?: ProcedureBuilder<Context, Input, Output, HandlerInput>) {
     if (source) {
       this.inputSchema = source.inputSchema
       this.outputSchema = source.outputSchema
-      this.middlewares = source.middlewares
+      this.middlewares = [...source.middlewares]
       this.procedureName = source.procedureName
       this.errorTap = source.errorTap
     }
   }
 
-  private clone() {
-    const cloned = new ProcedureBuilder<any, any, any, any>(this)
-
-    this.errorTap = () => {}
-    this.middlewares = []
-
-    return cloned
-  }
-
   public name(
     name: string
   ): ProcedureBuilder<Context, Input, Output, HandlerInput> {
-    this.procedureName = name
+    const b = new ProcedureBuilder(this)
+    b.procedureName = name
 
-    return this.clone()
+    return b
   }
 
   public tapOnError(
     tap: (error: RPCError) => void
   ): ProcedureBuilder<Context, Input, Output, HandlerInput> {
-    this.errorTap = tap
+    const b = new ProcedureBuilder(this)
+    b.errorTap = tap
 
-    return this.clone()
+    return b
   }
 
   public input<I extends StandardSchemaV1>(
@@ -65,25 +58,38 @@ export class ProcedureBuilder<
     Output,
     StandardSchemaV1.InferOutput<I>
   > {
-    this.inputSchema = schema as any
+    const b = new ProcedureBuilder(this)
+    b.inputSchema = schema as any
 
-    return this.clone()
+    return b as ProcedureBuilder<
+      Context,
+      StandardSchemaV1.InferInput<I>,
+      Output,
+      StandardSchemaV1.InferOutput<I>
+    >
   }
 
   public output<O>(
     schema: Schema<O>
   ): ProcedureBuilder<Context, Input, O, HandlerInput> {
-    this.outputSchema = schema as any
+    const b = new ProcedureBuilder(this)
+    b.outputSchema = schema as any
 
-    return this.clone()
+    return b as unknown as ProcedureBuilder<Context, Input, O, HandlerInput>
   }
 
   public use<ContextOut>(
     middleware: MiddlewareHandler<Context, ContextOut>
   ): ProcedureBuilder<ContextOut, Input, Output, HandlerInput> {
-    this.middlewares.push(middleware as MiddlewareHandler<unknown, unknown>)
+    const b = new ProcedureBuilder(this)
+    b.middlewares.push(middleware as MiddlewareHandler<unknown, unknown>)
 
-    return this.clone()
+    return b as unknown as ProcedureBuilder<
+      ContextOut,
+      Input,
+      Output,
+      HandlerInput
+    >
   }
 
   public query(handler: ProcedureHandler<Context, HandlerInput, Output>) {
@@ -102,7 +108,7 @@ export class ProcedureBuilder<
   }
 
   private _contract(method: 'GET' | 'POST') {
-    const builder = this.clone()
+    const builder = new ProcedureBuilder(this)
 
     return {
       name: this.procedureName,
